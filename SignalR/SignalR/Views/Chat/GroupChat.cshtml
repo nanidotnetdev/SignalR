@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Group Chat";
+}
+
+<h2>Welcome @ViewBag.UserName to @ViewBag.GroupName Group Chat!</h2>
+
+<div class="container">
+    <ul id="ulChatHistory"></ul>
+    <hr />
+    <input id="txtMessage" type="text" />
+    <input type="button" value="Send" onclick="SendMessage();" />
+    <hr />
+    <input type="button" value="Leave group Chat" onclick="LeaveGroupChat();"/>
+</div>
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script type="text/javascript">
+    var chatHub;
+    function AddChatmessage(userName, message) {
+        $("#ulChatHistory").append("<li><b>" + userName + ":</b>" + message + "</li>");
+    }
+
+    function SendMessage() {
+        var m = $("#txtMessage");
+        chatHub.server.sendGroupMessage('@ViewBag.GroupName', m.val(), '@ViewBag.UserName');
+        m.val('').focus();
+        }
+
+        function LeaveGroupChat() {
+            chatHub.server.leaveGroupChat('@ViewBag.GroupName');
+
+            window.location.href = "/Chat/Index";
+        }
+
+    $(function () {
+        chatHub = $.connection.chatHub;
+        $.connection.hub.start().done(function () {
+            chatHub.server.joinGroupChat('@ViewBag.GroupName');
+        });
+
+        chatHub.client.sendMessage = function (userName, message) {
+            AddChatmessage(userName, message);
+        };
+    });
+    </script>
+}
+
