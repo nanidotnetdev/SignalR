@@ -51,7 +51,6 @@
         $(function () {
             // Reference the auto-generated proxy for the hub.
             var UserHub = $.connection.userHub;
-            var connectionId = $.connection.hub.id;
 
             // Create a function that the hub can call back to display messages.
             UserHub.client.userupdated = function (userId) {
@@ -63,10 +62,9 @@
 
             // Start the connection.
             $.connection.hub.start().done(function () {
-                connectionId = $.connection.hub.id;
                 $('#btnSubmit').click(function () {
                     // Call the Send method on the hub.
-                    UserHub.server.send('@Model.userId', connectionId);
+                    UserHub.server.send('@Model.userId');
                 });
             });
         });

@@ -4,9 +4,9 @@ namespace SignalR.Hubs
 {
     public class UserHub: Hub
     {
-        public void send(string userId, string connectionId)
+        public void send(string userId)
         {
-            Clients.AllExcept(connectionId).userupdated(userId);
+            Clients.AllExcept(Context.ConnectionId).userupdated(userId);
         }
     }
 }
